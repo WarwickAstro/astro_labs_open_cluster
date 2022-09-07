@@ -16,7 +16,8 @@ def query_object(gaia_id):
     """
     qry = """
         SELECT
-        Bmag,e_Bmag,Vmag,e_Vmag,umag,e_umag,
+        GAIAmag,e_GAIAmag,Bmag,e_Bmag,
+        Vmag,e_Vmag,umag,e_umag,
         gmag,e_gmag,rmag,e_rmag,imag,
         e_imag,zmag,e_zmag,Jmag,e_Jmag,
         Hmag,e_Hmag,Kmag,e_Kmag
