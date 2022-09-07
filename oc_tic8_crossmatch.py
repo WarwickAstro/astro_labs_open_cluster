@@ -8,6 +8,7 @@ Output the new crossmatched table as csv file
 """
 from contextlib import contextmanager
 import pymysql
+import pandas as pd
 
 def query_object(gaia_id):
     """
@@ -33,7 +34,7 @@ def open_db(host='ngtdb', db='catalogues'):
     """
     Connect to database
     """
-    with pymysql.connection() as conn:
+    with pymysql.connect(host=host, db=db) as conn:
         with conn.cursor() as cur:
             yield cur
 
