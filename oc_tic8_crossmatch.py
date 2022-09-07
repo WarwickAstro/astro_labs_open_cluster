@@ -23,6 +23,7 @@ def query_object(gaia_id):
         FROM tic8
         WHERE gaia_id=%s
         """.format(gaia_id)
+    print(qry)
 
     with open_db() as cur:
         cur.execute(qry)
