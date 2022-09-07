@@ -25,8 +25,6 @@ def query_object(gaia_id):
         FROM tic8
         WHERE gaia_id={}
         """.format(gaia_id)
-    print(qry)
-
     with open_db() as cur:
         cur.execute(qry)
         res = cur.fetchone()
@@ -40,8 +38,6 @@ def open_db(host='ngtsdb', db='catalogues'):
     with pymysql.connect(host=host, db=db) as conn:
         with conn.cursor() as cur:
             yield cur
-
-
 
 if __name__ == "__main__":
     # load up the list of cluster members from the
@@ -67,8 +63,24 @@ if __name__ == "__main__":
                                     (290, 294)],
                           skiprows=30, header=0)
 
+    # query all the targets and store their results
+    # for appending to the pandas dataframe
     table = []
-    for s in catalog['source_ID'][:10]:
+    for i, s in enumerate(catalog['source_ID']):
         results = query_object(s)
         table.append(results)
+        print(i)
     table = np.array(table)
+
+    # put the new columns into the pandas dataframe
+    new_cols = ["GAIAmag", "e_GAIAmag", "Bmag", "e_Bmag",
+                "Vmag", "e_Vmag", "umag", "e_umag",
+                "gmag", "e_gmag", "rmag", "e_rmag", "imag",
+                "e_imag", "zmag", "e_zmag", "Jmag", "e_Jmag",
+                "Hmag", "e_Hmag", "Kmag", "e_Kmag"]
+    for i, nc in enumerate(new_cols):
+        catalog[nc] = table[:, i]
+
+    # dump the dataframe as a csv file for easier reading
+    output_name = "open_cluster_membership_apjac1d51t2_mrt.csv"
+    catalog.to_csv(output_name)
