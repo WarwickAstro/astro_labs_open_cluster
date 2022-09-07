@@ -15,6 +15,7 @@ def query_object(gaia_id):
     """
     Get magnitudes for given object
     """
+    success = False
     qry = """
         SELECT
         GAIAmag,e_GAIAmag,Bmag,e_Bmag,
@@ -25,9 +26,16 @@ def query_object(gaia_id):
         FROM tic8
         WHERE gaia_id={}
         """.format(gaia_id)
-    with open_db() as cur:
-        cur.execute(qry)
-        res = cur.fetchone()
+
+    # repeat until we get the results
+    while not success:
+        try:
+            with open_db() as cur:
+                cur.execute(qry)
+                res = cur.fetchone()
+                success = True
+        except:
+            success = False
     return res
 
 @contextmanager
