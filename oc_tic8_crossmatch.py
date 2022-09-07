@@ -16,12 +16,12 @@ def query_object(gaia_id):
     """
     qry = """
         SELECT
-        e_Bmag,Vmag,e_Vmag,umag,e_umag,
+        Bmag,e_Bmag,Vmag,e_Vmag,umag,e_umag,
         gmag,e_gmag,rmag,e_rmag,imag,
         e_imag,zmag,e_zmag,Jmag,e_Jmag,
         Hmag,e_Hmag,Kmag,e_Kmag
         FROM tic8
-        WHERE gaia_id=%s
+        WHERE gaia_id={}
         """.format(gaia_id)
     print(qry)
 
