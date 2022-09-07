@@ -9,6 +9,7 @@ Output the new crossmatched table as csv file
 from contextlib import contextmanager
 import pymysql
 import pandas as pd
+import numpy as np
 
 def query_object(gaia_id):
     """
@@ -66,6 +67,8 @@ if __name__ == "__main__":
                                     (290, 294)],
                           skiprows=30, header=0)
 
-    test_id = "458720619099467520"
-
-    results = query_object(test_id)
+    table = []
+    for s in catalog['source_ID'][:10]:
+        results = query_object(s)
+        table.append(results)
+    table = np.array(table)
