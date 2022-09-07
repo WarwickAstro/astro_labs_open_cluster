@@ -30,7 +30,7 @@ def query_object(gaia_id):
     return res
 
 @contextmanager
-def open_db(host='ngtdb', db='catalogues'):
+def open_db(host='ngtsdb', db='catalogues'):
     """
     Connect to database
     """
