@@ -25,7 +25,7 @@ def query_object(gaia_id):
         """.format(gaia_id)
 
     with open_db() as cur:
-        cur.query(qry)
+        cur.execute(qry)
         res = cur.fetchone()
     return res
 
