@@ -91,4 +91,4 @@ if __name__ == "__main__":
 
     # dump the dataframe as a csv file for easier reading
     output_name = "open_cluster_membership_apjac1d51t2_mrt.csv"
-    catalog.to_csv(output_name)
+    catalog.to_csv(output_name, index=False)
