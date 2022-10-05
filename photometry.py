@@ -1,8 +1,6 @@
 """
 Script to extract photometry from reduced meade images
 
-TODO: determine where to run this
-
 Assumptions:
     - Data live in data_dir
     - One folder in data_dir per-filter
@@ -42,6 +40,9 @@ import sep
 # pylint: disable = invalid-name
 # pylint: disable = redefined-outer-name
 # pylint: disable = no-member
+
+#TODO: determine where to run this
+#TODO: check on phot errors
 
 def arg_parse():
     """
@@ -211,8 +212,6 @@ if __name__ == "__main__":
             # this is required as FITS is 1 indexed and Numpy is 0 indexed
             coords[:, 0] -= 1
             coords[:, 1] -= 1
-
-            # TODO: add recentering!
 
             # convert the coords into ra/dec using WCS from image header
             w = WCS(filename)

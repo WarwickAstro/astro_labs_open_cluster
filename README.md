@@ -18,7 +18,7 @@ observations into the following directory structure:
       - R:
          - R flats
          - R science data
-      - IL
+      - I:
          - I flats
          - I science data
 ```
