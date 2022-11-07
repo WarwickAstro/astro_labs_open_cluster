@@ -165,7 +165,7 @@ def save_photometry(filename, coords, ra, dec, ids,
                fmt=fmt,
                delimiter=",")
 
-def do_phot(data_dir, filters, apertures):
+def photometry(data_dir, filters, apertures):
     """
     Combine the above and do photometry
     """
@@ -226,4 +226,4 @@ if __name__ == "__main__":
     assert len(filts) == len(apers), "Uneven number of filters and apertures!"
 
     # run the photometry
-    do_phot(args.data_dir, filts, apers)
+    photometry(args.data_dir, filts, apers)

@@ -4,7 +4,7 @@ Example usage of the pipeline
 import os
 from openclusters.reduce import reduce
 from openclusters.mkregions import mkregions
-from openclusters.photometry import do_phot
+from openclusters.photometry import photometry
 
 # SET UP PIPELINE
 # data directory
@@ -48,4 +48,4 @@ mkregions(data_dir, reference_image, reference_filter,
 # STOP HERE, MANUALLY MAKE OTHER FILTER REGION FILES
 
 # DO PHOTOMETRY ON THE DATA
-do_phot(data_dir, filters, apertures)
+photometry(data_dir, filters, apertures)
