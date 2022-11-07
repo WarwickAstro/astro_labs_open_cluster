@@ -383,13 +383,13 @@ def correct_data(filename, filt, master_bias=None, master_dark=None,
     fits.writeto(new_filename, ccd.data, header=hdr, overwrite=True)
     return ccd
 
-
-if __name__ == "__main__":
-    # load command line arguments
-    args = arg_parse()
-
+def reduce(data_dir, filters):
+    """
+    Combine the above and do the reduction
+    for all filters in a given data_dir
+    """
     # go to the data dir
-    os.chdir(args.data_dir)
+    os.chdir(data_dir)
 
     # get a list of images
     images = get_image_list()
@@ -399,11 +399,9 @@ if __name__ == "__main__":
     # make master dark
     master_dark, dark_exp = make_master_dark(images, master_bias=master_bias)
 
-    # get a list of filters
-    filts = args.filters.split(',')
 
     # then per-filter
-    for filt in filts:
+    for filt in filters:
         # change into the per-filter directory
         os.chdir(filt)
 
@@ -428,3 +426,12 @@ if __name__ == "__main__":
         # go back to top level directory
         os.chdir('../')
 
+if __name__ == "__main__":
+    # load command line arguments
+    args = arg_parse()
+
+    # get a list of filters
+    filts = args.filters.split(',')
+
+    # run the reduction
+    reduce(args.data_dir, filts)

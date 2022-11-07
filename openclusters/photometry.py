@@ -41,9 +41,6 @@ import sep
 # pylint: disable = redefined-outer-name
 # pylint: disable = no-member
 
-#TODO: determine where to run this
-#TODO: check on phot errors
-
 def arg_parse():
     """
     Argument parser settings
@@ -152,6 +149,7 @@ def phot(filename, coords):
 def save_photometry(filename, coords, ra, dec, ids,
                     flux, err, flux_w_sky, err_w_sky):
     """
+    Save a phot file to disc
     """
     # set up output filename
     outfile = f"{filename.split('.fts')[0]}.csv"
@@ -167,25 +165,13 @@ def save_photometry(filename, coords, ra, dec, ids,
                fmt=fmt,
                delimiter=",")
 
-
-if __name__ == "__main__":
-    # load command line arguments
-    args = arg_parse()
-
-    # go to the data dir
-    os.chdir(args.data_dir)
-
-    # get a list of filters
-    filts = args.filters.split(',')
-
-    # get a list of photometry apertures as integers
-    apers = list(map(int, args.apertures.split(',')))
-
-    # assert we have two list of the same length
-    assert len(filts) == len(apers), "Uneven number of filters and apertures!"
-
+def do_phot(data_dir, filters, apertures):
+    """
+    Combine the above and do photometry
+    """
+    os.chdir(data_dir)
     # then per-filter
-    for filt, aper in zip(filts, apers):
+    for filt, aper in zip(filters, apertures):
         # change into the per-filter directory
         os.chdir(filt)
 
@@ -226,3 +212,18 @@ if __name__ == "__main__":
         # go back to top level directory
         os.chdir('../')
 
+if __name__ == "__main__":
+    # load command line arguments
+    args = arg_parse()
+
+    # get a list of filters
+    filts = args.filters.split(',')
+
+    # get a list of photometry apertures as integers
+    apers = list(map(int, args.apertures.split(',')))
+
+    # assert we have two list of the same length
+    assert len(filts) == len(apers), "Uneven number of filters and apertures!"
+
+    # run the photometry
+    do_phot(args.data_dir, filts, apers)

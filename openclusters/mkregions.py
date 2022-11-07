@@ -144,6 +144,52 @@ def check_image_boundaries(x, y, object_ids, width, height):
     return x_checked, y_checked, object_ids_checked
 
 
+def mkregions(data_dir, reference_image, reference_filter,
+              catalog_path, cluster_name, pl, pu, mf, mb,
+              region_colour):
+    """
+    Combine the above and make region files
+    """
+    # load the catalog
+    catalog = pd.read_csv(catalog_path)
+
+    # remove spaces from Cluster names
+    catalog['Cluster_n'] = [c.replace(' ', '') for c in catalog['Cluster']]
+
+    # isolate the stars for the given cluster in the big catalog
+    #loc = np.where(catalog['Cluster_n'] == args.cluster_name)[0]
+    #coords = np.array([catalog['ra'][loc], catalog['dec'][loc]]).T
+    #ids = catalog['source_ID'][loc]
+
+    # isolate the stars in this cluster where mag range and
+    # mem_prob range are met.
+    cluster_cat = catalog[(catalog['Cluster_n'] == cluster_name) &
+                          (catalog['Pmem'] >= pl) &
+                          (catalog['Pmem'] <= pu) &
+                          (catalog['g_mag'] <= mf) &
+                          (catalog['g_mag'] >= mb)]
+    coords = np.array([cluster_cat['ra'], cluster_cat['dec']]).T
+    ids = cluster_cat['source_ID']
+
+    # move into the data_dir for the reference filter
+    os.chdir(f"{data_dir}/{reference_filter}")
+
+    # convert the catalogue positions into CCD coords and keep those on chip only
+    x, y, oids = catalogue_to_pixels(reference_image, coords, ids)
+
+    # output a region file with assumed raidius of 5 pixels
+    region_filename = f"{reference_image.split('.fts')[0]}.reg"
+    hdr = "# Region file format: DS9 version 4.1\nglobal color=green dashlist=8 3 width=1 font=\"helvetica 10 normal roman\" select=1 highlite=1 dash=0 fixed=0 edit=1 move=1 delete=1 include=1 source=1\nimage\n"
+    with open(region_filename, 'w') as of:
+        of.write(hdr)
+        for i, j in zip(x, y):
+            line = f"circle({i:.3f},{j:.3f},5) # color={region_colour}\n"
+            of.write(line)
+
+    # move into the data_dir for the next steps
+    os.chdir(f"{data_dir}")
+
+
 if __name__ == "__main__":
     args = arg_parse()
 
@@ -163,28 +209,7 @@ if __name__ == "__main__":
         print('Enter a valid magnitude range - faint,bright (e.g. 15.0,10.0')
         sys.exit(1)
 
-    # load the catalog
-    catalog = pd.read_csv(args.catalog_path)
-
-    # remove spaces from Cluster names
-    catalog['Cluster_n'] = [c.replace(' ', '') for c in catalog['Cluster']]
-
-    # isolate the stars for the given cluster in the big catalog
-    loc = np.where(catalog['Cluster_n'] == args.cluster_name)[0]
-    coords = np.array([catalog['ra'][loc], catalog['dec'][loc]]).T
-    ids = catalog['source_ID'][loc]
-
-    # move into the data_dir for the reference filter
-    os.chdir(f"{args.data_dir}/{args.filter}")
-
-    # convert the catalogue positions into CCD coords and keep those on chip only
-    x, y, oids = catalogue_to_pixels(args.reference_image, coords, ids)
-
-    # output a region file with assumed raidius of 5 pixels
-    region_filename = f"{args.reference_image.split('.fts')[0]}_test.reg"
-    hdr = "# Region file format: DS9 version 4.1\nglobal color=green dashlist=8 3 width=1 font=\"helvetica 10 normal roman\" select=1 highlite=1 dash=0 fixed=0 edit=1 move=1 delete=1 include=1 source=1\nimage\n"
-    with open(region_filename, 'w') as of:
-        of.write(hdr)
-        for i, j in zip(x, y):
-            line = f"circle({i:.3f},{j:.3f},5) # color={args.region_colour}\n"
-            of.write(line)
+    # run the region maker
+    mkregions(args.data_dir, args.reference_image, args.reference_filter,
+              args.catalog_path, args.cluster_name, pl, pu, mf, mb,
+              args.region_colour)

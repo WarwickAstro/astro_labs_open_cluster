@@ -30,12 +30,11 @@ e.g. ```/Users/jmcc/data/20220909```.
 All python scripts described below can be called with the ```-h``` option
 to remind yourself of the required input parameters.
 
-
 There are four steps to producing photometry:
 
    1. Collect the data into the structure described above
    1. Run the ```reduce.py``` script on this data directory.
-   1. Run the ```make_region_file.py``` script
+   1. Run the ```mkregions.py``` script
    1. Run the ```photometry.py``` script
 
 These scripts will calibrate the data, identify which stars to extract
@@ -44,8 +43,17 @@ photometry from and then perform the aperture photometry.
 Finally the students must analyse the output photometry files to create
 the HR diagrams and perform the analyse described in the experiment.
 
+# Combined Analysis Notebook
 
-# Script Usage
+The pipeline functions have been combined into one simple Jupyter notebook.
+You must set up the pipeline by supplying the informatio in the setup cell.
+
+Then you can run the reduction and make the region file for the reference filter.
+This region file can then be copied and adjusted to line up the stars in the
+other filters. Save a new aligned copy of the region file for each filter/image
+to extract photometry from. Then continue to the photometry step.
+
+# Individual Script Usage
 
 ### reduce.py
 
@@ -61,11 +69,11 @@ positional arguments:
       -h, --help  show this help message and exit
 ```
 
-### make_region_file.py
+### mkregions.py
 
 ```
-▶ python make_region_file.py -h
-usage: make_region_file.py [-h] [--region_colour {green,blue,red,yellow}]
+▶ python mkregions.py -h
+usage: mkregions.py [-h] [--region_colour {green,blue,red,yellow}]
                            data_dir reference_image {B,V,R,I} cluster_name
                            cmp_range mag_range catalog_path
 
